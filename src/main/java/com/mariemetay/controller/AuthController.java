@@ -1,8 +1,8 @@
-package com.mariemetay.controllers;
+package com.mariemetay.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mariemetay.services.JWTService;
+import com.mariemetay.service.JWTService;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
