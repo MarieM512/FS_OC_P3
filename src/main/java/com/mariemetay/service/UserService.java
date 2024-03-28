@@ -43,6 +43,10 @@ public class UserService {
         return (userRegistered.getPassword().equals(user.getPassword()));
     }
 
+    public User getUser(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     public User register(UserRegisterDTO userDTO) {
         User user = registerDtoToEntity(userDTO);
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));

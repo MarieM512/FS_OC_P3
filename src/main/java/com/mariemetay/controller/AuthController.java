@@ -1,9 +1,10 @@
 package com.mariemetay.controller;
 
+import com.mariemetay.model.User;
 import com.mariemetay.model.dto.UserLoginDTO;
 import com.mariemetay.model.dto.UserRegisterDTO;
 import com.mariemetay.model.response.Login401;
-import com.mariemetay.model.response.Register200;
+import com.mariemetay.model.response.RegisterLogin200;
 import com.mariemetay.service.JWTService;
 import com.mariemetay.service.UserService;
 
@@ -13,9 +14,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +43,7 @@ public class AuthController {
     @Operation(summary = "Register a new user")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successful registration", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Register200.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = RegisterLogin200.class))
         }),
         @ApiResponse(responseCode = "400", description = "Some fields are empty", content = @Content),
         @ApiResponse(responseCode = "409", description = "User already exists", content = @Content)
@@ -54,7 +57,7 @@ public class AuthController {
         } else {
             userService.register(user);
             String token = jwtService.generateToken(user.getEmail());
-            Register200 response = new Register200();
+            RegisterLogin200 response = new RegisterLogin200();
             response.setToken(token);
             return ResponseEntity.ok(response);
         }
@@ -63,7 +66,7 @@ public class AuthController {
     @Operation(summary = "Connect user")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successful login", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = Register200.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = RegisterLogin200.class))
         }),
         @ApiResponse(responseCode = "400", description = "Some fields are empty", content = @Content),
         @ApiResponse(responseCode = "401", description = "Invalid email or password ", content = {
@@ -76,11 +79,24 @@ public class AuthController {
             return ResponseEntity.badRequest().build();
         } else if (userService.canConnect(user)) {
             String token = jwtService.generateToken(user.getEmail());
-            Register200 response = new Register200();
+            RegisterLogin200 response = new RegisterLogin200();
             response.setToken(token);
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(401).body(new Login401());
+        }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<User> getUser(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            String token = bearerToken.substring(7);
+            String email = jwtService.decodeToken(token);
+            User user = userService.getUser(email);
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(401).build();
         }
     }
 }
