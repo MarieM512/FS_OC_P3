@@ -1,6 +1,8 @@
 package com.mariemetay.controller;
 
+import com.mariemetay.model.dto.UserLoginDTO;
 import com.mariemetay.model.dto.UserRegisterDTO;
+import com.mariemetay.model.response.Login401;
 import com.mariemetay.model.response.Register200;
 import com.mariemetay.service.JWTService;
 import com.mariemetay.service.UserService;
@@ -13,7 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,13 +50,27 @@ public class AuthController {
         if (user.getName() == null || user.getEmail() == null || user.getPassword() == null) {
             return ResponseEntity.badRequest().build();
         } else if (userService.isUserAlreadyExists(user)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(409).build();
         } else {
             userService.register(user);
-            String token = jwtService.generateToken(user);
+            String token = jwtService.generateToken(user.getEmail());
             Register200 response = new Register200();
             response.setToken(token);
             return ResponseEntity.ok(response);
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UserLoginDTO user) {
+        if (user.getEmail() == null || user.getPassword() == null) {
+            return ResponseEntity.badRequest().build();
+        } else if (userService.canConnect(user)) {
+            String token = jwtService.generateToken(user.getEmail());
+            Register200 response = new Register200();
+            response.setToken(token);
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(401).body(new Login401());
         }
     }
 }

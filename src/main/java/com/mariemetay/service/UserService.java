@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.mariemetay.model.User;
+import com.mariemetay.model.dto.UserLoginDTO;
 import com.mariemetay.model.dto.UserRegisterDTO;
 import com.mariemetay.repository.UserRepository;
 
@@ -35,6 +36,11 @@ public class UserService {
         } else {
             return true;
         }
+    }
+
+    public Boolean canConnect(UserLoginDTO user) {
+        User userRegistered = userRepository.findByEmail(user.getEmail());
+        return (userRegistered.getPassword().equals(user.getPassword()));
     }
 
     public User register(UserRegisterDTO userDTO) {
