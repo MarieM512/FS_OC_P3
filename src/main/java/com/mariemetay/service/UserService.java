@@ -2,11 +2,13 @@ package com.mariemetay.service;
 
 import java.util.Date;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.mariemetay.model.User;
+import com.mariemetay.model.dto.UserRegisterDTO;
 import com.mariemetay.repository.UserRepository;
 
 @Service
@@ -18,12 +20,16 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.modelMapper = modelMapper;
     }
 
-    public Boolean isUserAlreadyExists(User user) {
+    public Boolean isUserAlreadyExists(UserRegisterDTO user) {
         if (userRepository.findByEmail(user.getEmail()) == null) {
             return false;
         } else {
@@ -31,10 +37,15 @@ public class UserService {
         }
     }
 
-    public User register(User user) {
+    public User register(UserRegisterDTO userDTO) {
+        User user = registerDtoToEntity(userDTO);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setCreatedAt(new Date());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
+    }
+
+    private User registerDtoToEntity(UserRegisterDTO userRegisterDTO) {
+        return modelMapper.map(userRegisterDTO, User.class);
     }
 
 }

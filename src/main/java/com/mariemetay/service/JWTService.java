@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
-import com.mariemetay.model.User;
+import com.mariemetay.model.dto.UserRegisterDTO;
 
 @Service
 public class JWTService {
@@ -21,7 +21,7 @@ public class JWTService {
         this.jwtEncoder = jwtEncoder;
     }
 
-    public String generateToken(User user) {
+    public String generateToken(UserRegisterDTO user) {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuer("self")
