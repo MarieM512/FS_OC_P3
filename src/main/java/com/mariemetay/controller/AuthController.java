@@ -60,6 +60,16 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Connect user")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful login", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Register200.class))
+        }),
+        @ApiResponse(responseCode = "400", description = "Some fields are empty", content = @Content),
+        @ApiResponse(responseCode = "401", description = "Invalid email or password ", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Login401.class))
+        })
+    })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDTO user) {
         if (user.getEmail() == null || user.getPassword() == null) {
