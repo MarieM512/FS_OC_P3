@@ -87,6 +87,13 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Get user information")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Retrieve all informations about the user", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))
+        }),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+    })
     @GetMapping("/me")
     public ResponseEntity<User> getUser(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
