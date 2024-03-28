@@ -42,16 +42,6 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public UserDetailsService users() {
-        UserDetails user = User.builder()
-            .username("test@test.com")
-            .password(passwordEncoder().encode("test!31"))
-            .build();
-
-        return new InMemoryUserDetailsManager(user);
-    }
-
-    @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
