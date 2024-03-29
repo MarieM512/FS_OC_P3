@@ -1,6 +1,7 @@
 package com.mariemetay.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,10 @@ public class RentalService {
         rental.setOwnerId(id);
         rental.setCreatedAt(new Date());
         return rentalRepository.save(rental);
+    }
+
+    public List<Rental> getAllRentals() {
+        return rentalRepository.findAll();
     }
 
     private Rental createDtoToEntity(RentalDTO rentalDTO) {

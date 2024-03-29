@@ -1,16 +1,21 @@
 package com.mariemetay.controller;
 
 import java.math.BigInteger;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mariemetay.model.Rental;
 import com.mariemetay.model.User;
 import com.mariemetay.model.dto.RentalDTO;
 import com.mariemetay.model.response.RentalCreate200;
@@ -89,17 +94,14 @@ public class RentalsController {
         }
     }
 
-    // @GetMapping("")
-    // public ResponseEntity<List<Rental>> getAllRentals(HttpServletRequest request) {
-        // String bearerToken = request.getHeader("Authorization");
-        // if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-        //     String token = bearerToken.substring(7);
-        //     String email = jwtService.decodeToken(token);
-        //     User user = userService.getUser(email);
-        //     return ResponseEntity.ok(user);
-        // } else {
-        //     return ResponseEntity.status(401).build();
-        // }
-    // }
+    @GetMapping("")
+    public ResponseEntity<Map<String, List<Rental>>> getAllRentals(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return ResponseEntity.ok(Collections.singletonMap("rentals", rentalService.getAllRentals()));
+        } else {
+            return ResponseEntity.status(401).build();
+        }
+    }
 
 }
