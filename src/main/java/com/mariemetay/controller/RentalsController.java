@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,11 +49,11 @@ public class RentalsController {
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RentalCreate200> create(
         HttpServletRequest request, 
-        @RequestParam("name") String name,
-        @RequestParam("surface") BigInteger surface,
-        @RequestParam("price") BigInteger price,
-        @RequestParam("picture") MultipartFile picture,
-        @RequestParam("description") String description
+        @RequestPart("name") String name,
+        @RequestPart("surface") BigInteger surface,
+        @RequestPart("price") BigInteger price,
+        @RequestPart("picture") MultipartFile picture,
+        @RequestPart("description") String description
     ) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
