@@ -37,6 +37,10 @@ public class RentalService {
         return rentalRepository.findAll();
     }
 
+    public Rental getRentalById(Long id) {
+        return rentalRepository.findById(id).orElse(null);
+    }
+
     private Rental createDtoToEntity(RentalDTO rentalDTO) {
         return modelMapper.map(rentalDTO, Rental.class);
     }

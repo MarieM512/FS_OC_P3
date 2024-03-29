@@ -1,14 +1,12 @@
 package com.mariemetay.controller;
 
 import java.math.BigInteger;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -110,6 +108,17 @@ public class RentalsController {
             RentalGetAll200 reponse = new RentalGetAll200();
             reponse.setRentals(rentalService.getAllRentals());
             return ResponseEntity.ok(reponse);
+        } else {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Rental> getRentalById(HttpServletRequest request, @PathVariable("id") Long id) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            Rental rental = rentalService.getRentalById(id);
+            return ResponseEntity.ok(rental);
         } else {
             return ResponseEntity.status(401).build();
         }
