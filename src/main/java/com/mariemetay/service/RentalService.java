@@ -55,6 +55,7 @@ public class RentalService {
         if (rental.getDescription() != null) {
             actualRental.setDescription(rental.getDescription());
         }
+        actualRental.setUpdatedAt(new Date());
         return rentalRepository.save(actualRental);
     }
 
