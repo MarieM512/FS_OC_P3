@@ -133,27 +133,32 @@ public class RentalsController {
         }
     }
 
+    @Operation(summary = "Update rental")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully updated", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Rental200.class))
+        }),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+    })
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Rental200> updateRental(
         HttpServletRequest request, 
         @PathVariable("id") Long id,
-        @RequestPart("name") String name,
-        @RequestPart("surface") BigInteger surface,
-        @RequestPart("price") BigInteger price,
-        @RequestPart("description") String description
+        @RequestPart(name = "name", required = false) String name,
+        @RequestPart(name = "surface", required = false) BigInteger surface,
+        @RequestPart(name = "price", required = false) BigInteger price,
+        @RequestPart(name = "description", required = false) String description
     ) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-
             Rental rental = new Rental();
             rental.setId(id);
             rental.setName(name);
             rental.setSurface(surface);
             rental.setPrice(price);
             rental.setDescription(description);
-
             rentalService.updateRental(rental);
-
             Rental200 response = new Rental200();
             response.setMessage("Rental updated !");
             return ResponseEntity.ok(response);
