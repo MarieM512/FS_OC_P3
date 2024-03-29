@@ -11,6 +11,12 @@ import com.mariemetay.model.dto.MessageDTO;
 import com.mariemetay.model.response.Rental200;
 import com.mariemetay.service.MessageService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -26,7 +32,16 @@ public class MessagesController {
         this.messageService = messageService;
     }
 
+    @Operation(summary = "Contact the owner")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully send", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Rental200.class))
+        }),
+        @ApiResponse(responseCode = "400", description = "Some fields are empty", content = @Content),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+    })
     @PostMapping("")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Rental200> postMessage(HttpServletRequest request, @RequestBody MessageDTO messageDTO) {
         String bearerToken = request.getHeader("Authorization");
         if (messageDTO.getMessage() == null || messageDTO.getUser_id() == null || messageDTO.getRental_id() == null) {
