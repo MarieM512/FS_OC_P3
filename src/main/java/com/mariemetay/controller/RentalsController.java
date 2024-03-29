@@ -19,6 +19,7 @@ import com.mariemetay.model.Rental;
 import com.mariemetay.model.User;
 import com.mariemetay.model.dto.RentalDTO;
 import com.mariemetay.model.response.RentalCreate200;
+import com.mariemetay.model.response.RentalGetAll200;
 import com.mariemetay.service.FileStorageService;
 import com.mariemetay.service.JWTService;
 import com.mariemetay.service.RentalService;
@@ -94,11 +95,21 @@ public class RentalsController {
         }
     }
 
+    @Operation(summary = "Display all rentals")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully retrieve", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = RentalGetAll200.class))
+        }),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+    })
     @GetMapping("")
-    public ResponseEntity<Map<String, List<Rental>>> getAllRentals(HttpServletRequest request) {
+    @SecurityRequirement(name = "Authorization")
+    public ResponseEntity<RentalGetAll200> getAllRentals(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return ResponseEntity.ok(Collections.singletonMap("rentals", rentalService.getAllRentals()));
+            RentalGetAll200 reponse = new RentalGetAll200();
+            reponse.setRentals(rentalService.getAllRentals());
+            return ResponseEntity.ok(reponse);
         } else {
             return ResponseEntity.status(401).build();
         }
