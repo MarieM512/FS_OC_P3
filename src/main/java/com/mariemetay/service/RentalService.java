@@ -41,6 +41,23 @@ public class RentalService {
         return rentalRepository.findById(id).orElse(null);
     }
 
+    public Rental updateRental(Rental rental) {
+        Rental actualRental = getRentalById(rental.getId());
+        if (rental.getName() != null) {
+            actualRental.setName(rental.getName());
+        }
+        if (rental.getSurface() != null) {
+            actualRental.setSurface(rental.getSurface());
+        }
+        if (rental.getPrice() != null) {
+            actualRental.setPrice(rental.getPrice());
+        }
+        if (rental.getDescription() != null) {
+            actualRental.setDescription(rental.getDescription());
+        }
+        return rentalRepository.save(actualRental);
+    }
+
     private Rental createDtoToEntity(RentalDTO rentalDTO) {
         return modelMapper.map(rentalDTO, Rental.class);
     }

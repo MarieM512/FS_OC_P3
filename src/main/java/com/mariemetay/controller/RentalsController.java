@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.mariemetay.model.Rental;
 import com.mariemetay.model.User;
 import com.mariemetay.model.dto.RentalDTO;
-import com.mariemetay.model.response.RentalCreate200;
+import com.mariemetay.model.response.Rental200;
 import com.mariemetay.model.response.RentalGetAll200;
 import com.mariemetay.service.FileStorageService;
 import com.mariemetay.service.JWTService;
@@ -59,13 +60,13 @@ public class RentalsController {
     @Operation(summary = "Create a rental")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successfully created", content = {
-            @Content(mediaType = "application/json", schema = @Schema(implementation = RentalCreate200.class))
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Rental200.class))
         }),
         @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
     })
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @SecurityRequirement(name = "Authorization")
-    public ResponseEntity<RentalCreate200> create(
+    public ResponseEntity<Rental200> create(
         HttpServletRequest request, 
         @RequestPart("name") String name,
         @RequestPart("surface") BigInteger surface,
@@ -85,7 +86,7 @@ public class RentalsController {
             String pictureUrl = fileStorageService.storeFile(picture);
             rental.setDescription(description);
             rentalService.create(rental, user.getId(), pictureUrl);
-            RentalCreate200 response = new RentalCreate200();
+            Rental200 response = new Rental200();
             response.setMessage("Rental created !");
             return ResponseEntity.ok(response);
         } else {
@@ -127,6 +128,35 @@ public class RentalsController {
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             Rental rental = rentalService.getRentalById(id);
             return ResponseEntity.ok(rental);
+        } else {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Rental200> updateRental(
+        HttpServletRequest request, 
+        @PathVariable("id") Long id,
+        @RequestPart("name") String name,
+        @RequestPart("surface") BigInteger surface,
+        @RequestPart("price") BigInteger price,
+        @RequestPart("description") String description
+    ) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+
+            Rental rental = new Rental();
+            rental.setId(id);
+            rental.setName(name);
+            rental.setSurface(surface);
+            rental.setPrice(price);
+            rental.setDescription(description);
+
+            rentalService.updateRental(rental);
+
+            Rental200 response = new Rental200();
+            response.setMessage("Rental updated !");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(401).build();
         }
