@@ -113,7 +113,15 @@ public class RentalsController {
         }
     }
 
+    @Operation(summary = "Display specific rental by its id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully retrieve", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = Rental.class))
+        }),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+    })
     @GetMapping("/{id}")
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Rental> getRentalById(HttpServletRequest request, @PathVariable("id") Long id) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
