@@ -19,6 +19,12 @@ import com.mariemetay.service.JWTService;
 import com.mariemetay.service.RentalService;
 import com.mariemetay.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -46,7 +52,15 @@ public class RentalsController {
         this.fileStorageService = fileStorageService;
     }
 
+    @Operation(summary = "Create a rental")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully created", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = RentalCreate200.class))
+        }),
+        @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+    })
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @SecurityRequirement(name = "Authorization")
     public ResponseEntity<RentalCreate200> create(
         HttpServletRequest request, 
         @RequestPart("name") String name,
