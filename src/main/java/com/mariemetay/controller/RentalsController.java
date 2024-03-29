@@ -64,13 +64,13 @@ public class RentalsController {
         }),
         @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
     })
-    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Rental200> create(
         HttpServletRequest request, 
         @RequestPart("name") String name,
-        @RequestPart("surface") BigInteger surface,
-        @RequestPart("price") BigInteger price,
+        @RequestPart("surface") String surface,
+        @RequestPart("price") String price,
         @RequestPart("picture") MultipartFile picture,
         @RequestPart("description") String description
     ) {
@@ -81,8 +81,8 @@ public class RentalsController {
             User user = userService.getUser(email);
             RentalDTO rental = new RentalDTO();
             rental.setName(name);
-            rental.setSurface(surface);
-            rental.setPrice(price);
+            rental.setSurface(Integer.valueOf(surface));
+            rental.setPrice(Integer.valueOf(price));
             String pictureUrl = fileStorageService.storeFile(picture);
             rental.setDescription(description);
             rentalService.create(rental, user.getId(), pictureUrl);

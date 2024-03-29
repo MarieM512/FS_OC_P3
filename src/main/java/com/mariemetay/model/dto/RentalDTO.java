@@ -1,7 +1,5 @@
 package com.mariemetay.model.dto;
 
-import java.math.BigInteger;
-
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
@@ -11,9 +9,9 @@ public class RentalDTO {
 
     private String name;
 
-    private BigInteger surface;
+    private Integer surface;
 
-    private BigInteger price;
+    private Integer price;
 
     private MultipartFile picture;
 
