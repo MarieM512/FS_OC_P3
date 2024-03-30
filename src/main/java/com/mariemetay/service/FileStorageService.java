@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileStorageService {
 
     private String fileStorageLocation = "src/main/resources/img/";
-    private String baseUrl = "http://localhost:4200/backend/img/";
+    private String baseUrl = "http://localhost:3001/backend/img/";
 
     public String storeFile(MultipartFile file) {
         String fileName = file.getOriginalFilename();
