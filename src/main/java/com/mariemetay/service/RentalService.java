@@ -1,6 +1,5 @@
 package com.mariemetay.service;
 
-import java.util.Date;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -29,7 +28,6 @@ public class RentalService {
         Rental rental = createDtoToEntity(rentalDTO);
         rental.setPicture(picture);
         rental.setOwnerId(id);
-        rental.setCreatedAt(new Date());
         return rentalRepository.save(rental);
     }
 
@@ -55,7 +53,6 @@ public class RentalService {
         if (rental.getDescription() != null) {
             actualRental.setDescription(rental.getDescription());
         }
-        actualRental.setUpdatedAt(new Date());
         return rentalRepository.save(actualRental);
     }
 

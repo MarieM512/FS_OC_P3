@@ -1,7 +1,5 @@
 package com.mariemetay.service;
 
-import java.util.Date;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +26,6 @@ public class MessageService {
         Message message = dtoToEntity(messageDTO);
         message.setRentalId(messageDTO.getRental_id());
         message.setUserId(messageDTO.getUser_id());
-        message.setCreatedAt(new Date());
         return messageRepository.save(message);
     }
 
