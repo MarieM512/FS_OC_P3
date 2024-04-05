@@ -17,10 +17,6 @@ public class FileStorageService {
     private String serverPort;
     private String fileStorageLocation = "src/main/resources/img/";
 
-    // private String baseUrl {
-
-    // }
-
     public String storeFile(MultipartFile file) {
         String fileName = file.getOriginalFilename();
         String baseUrl = "http://localhost:" + serverPort + "/backend/img/";
@@ -29,11 +25,14 @@ public class FileStorageService {
             if (fileName.contains("..")) {
                 throw new FileStorageException("Filename contains invalid path sequence " + fileName);
             }
-
-            Path targetLocation = Paths.get(fileStorageLocation).resolve(fileName);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
-            return baseUrl + fileName;
+            if (file.getContentType().equals("image/jpeg") || file.getContentType().equals("image/png")) {
+                Path targetLocation = Paths.get(fileStorageLocation).resolve(fileName);
+                Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+    
+                return baseUrl + fileName;
+            } else {
+                throw new IOException("Please upload an image with png or jpeg extension.");
+            }
         } catch (IOException e) {
             throw new FileStorageException("Couldn't store file " + fileName + ".Please try again !", e);
         }
