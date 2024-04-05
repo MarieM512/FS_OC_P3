@@ -3,6 +3,9 @@ package com.mariemetay.model;
 import java.math.BigInteger;
 import java.util.Date;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,12 +44,10 @@ public class Rental {
     @Schema(example = "2")
     private Long ownerId;
 
-    @Column(name = "created_at")
-    @Schema(example = "2024-03-28 12:29:44")
-    private Date createdAt;
+    @CreationTimestamp
+    private Date created_at;
 
-    @Column(name = "updated_at")
-    @Schema(example = "2024-03-28 12:29:44")
-    private Date updatedAt;
+    @UpdateTimestamp
+    private Date updated_at;
 
 }
