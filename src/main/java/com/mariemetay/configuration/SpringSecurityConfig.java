@@ -2,6 +2,7 @@ package com.mariemetay.configuration;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,7 +22,8 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 @Configuration
 public class SpringSecurityConfig {
 
-    private String jwtKey = "azertyuiopmlkjhgfdsqwxcvbnazerty";
+    @Value("${JWT_KEY}")
+    private String jwtKey;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
