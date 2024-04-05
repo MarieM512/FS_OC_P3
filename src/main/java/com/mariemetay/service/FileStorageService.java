@@ -6,17 +6,24 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileStorageService {
 
+    @Value("${SERVER_PORT}")
+    private String serverPort;
     private String fileStorageLocation = "src/main/resources/img/";
-    private String baseUrl = "http://localhost:3001/backend/img/";
+
+    // private String baseUrl {
+
+    // }
 
     public String storeFile(MultipartFile file) {
         String fileName = file.getOriginalFilename();
+        String baseUrl = "http://localhost:" + serverPort + "/backend/img/";
 
         try {
             if (fileName.contains("..")) {
