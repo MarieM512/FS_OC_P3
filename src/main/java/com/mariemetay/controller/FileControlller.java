@@ -29,13 +29,13 @@ public class FileControlller {
 
         try {
             resource = new UrlResource(filePath.toUri());
+            if (!resource.exists()) {
+                return ResponseEntity.status(404).build();
+            } else {
+                return ResponseEntity.ok().body(resource);
+            }
         } catch (MalformedURLException e) {
-            throw new FileNotFoundException("File not found" + fileName);
+            return ResponseEntity.status(500).build();
         }
-        if (!resource.exists()) {
-            throw new FileNotFoundException("File not found" + fileName);
-        }
-        return ResponseEntity.ok().body(resource);
     }
-
 }
