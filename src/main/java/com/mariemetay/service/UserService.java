@@ -39,7 +39,7 @@ public class UserService {
 
     public Boolean canConnect(UserLoginDTO user) {
         User userRegistered = userRepository.findByEmail(user.getEmail());
-        return (userRegistered.getPassword().equals(user.getPassword()));
+        return passwordEncoder.matches(user.getPassword(), userRegistered.getPassword());
     }
 
     public User getUser(String email) {
