@@ -38,9 +38,10 @@ If you don't know how to do it, please follow the instructions
 - Click on the fourth icon from the left
 - In Schema Name enter a name for your database, be sure to retain it because we will need it after.
 - Click on Apply
-- Click on your new database at the left
-- Go to the "File" > "Open SQL Script" > Select `chatop.sql` from the repository
-- Click on the execute icon
+- Go to the "Server" > "Data Import"
+- Select Import from Self-Contained File > Select `chatop.sql` from the repository
+- Select your database in Default Schema to be Imported To
+- Click on "Start Import"
 
 ### 3. Update the application with your config
 
